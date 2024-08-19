@@ -1,17 +1,47 @@
 complete_status = " - complete"
-incomplete_status = " - incomplete"
+incomplete_status= " - incomplete"
+to_do_list = []
+#task = 0   
+
+# defines custom exception for a task already in list
+class TaskInListError(Exception):
+    def  __init__(self, message):
+        self.message = message
+        return None
+
+#function that checks whether the task is in the list and checks for inputs under than 3 characters
+def check_task(task, to_do_list):
+    if (task + incomplete_status) in to_do_list:
+        raise TaskInListError(f"\nLooks like {task} is already on the list")
+    elif len(task) < 3:
+        raise InvalidEntry("Looks like a valid task wasn't entered. Please enter a task of 3 characters or more")
+
+
+# defines custom exception that for inputs under 3 characters
+class InvalidEntry(Exception):
+    def  __init__(self, message):
+        self.message = message
+        return None
+    
+class EmptyListError(Exception):
+    def __init__(self, message):
+        self.message = message
+        return None
+
 
 # this function is for adding a task to the to do list
 def add_task(to_do_list, task):
     try:
-        if task not in to_do_list:
+        check_task(task, to_do_list)
+        if (task + incomplete_status) not in to_do_list:
             task = task + incomplete_status
             to_do_list.append(task)
             print(f"\n{task} has been added to your To Do List.")
-            return to_do_list, task
-    except "Task in List Already Error":
-        if task in to_do_list:
-            print(f"\nLooks like {task} is already on the list")
+        return to_do_list, task 
+    except TaskInListError as e:
+        print(e.message)
+    except InvalidEntry as e:
+        print(e.message)
     finally:
         print("Returning to menu...\n")
 
@@ -23,8 +53,10 @@ def display_task(to_do_list, task, index):
             for task in to_do_list:
                 index += 1
                 print(f"{index}. {task}")
-    except "Empty List Error":
-        print("\nYour Do List is empty. You can sit back and relax, or add a task.")
+        if not to_do_list:
+            raise EmptyListError("\nYour Do List is empty. You can sit back and relax, or add a task.")
+    except EmptyListError as e:
+        print(e.message)
     finally:
         print("Returning to menu...\n")
 
@@ -47,7 +79,7 @@ def remove_task(to_do_list, index):
     return to_do_list
 
 def to_do_list_main_function():
-    to_do_list = []
+    #to_do_list = []
     task = 0
     index = 0
 
