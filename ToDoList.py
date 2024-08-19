@@ -29,6 +29,11 @@ class EmptyListError(Exception):
         return None
 
 
+class TaskComplete(Exception):
+    def __init__(self, message):
+        self.message = message
+        return None
+
 # this function is for adding a task to the to do list
 def add_task(to_do_list, task):
     try:
@@ -62,11 +67,21 @@ def display_task(to_do_list, task, index):
 
 def mark_task_complete(index, to_do_list):
     index -= 1 
-    if index <= len(to_do_list):
-        to_do_list[index] = to_do_list[index].replace(incomplete_status, complete_status)
-        print(f"Complete status for {to_do_list[index]} successful. Select option 2 for an updated list")
-    return to_do_list      
-
+    try:
+        if complete_status in to_do_list[index]:
+            raise TaskComplete(f"\n{to_do_list[index]} was already marked complete. To delete choose option 4.")
+        elif index <= len(to_do_list):
+            to_do_list[index] = to_do_list[index].replace(incomplete_status, complete_status)
+            print(f"\n{to_do_list[index]} status successful. Select option 2 for an updated list")
+            return to_do_list 
+    except ValueError:
+        print("Please type the task number. You can find it in the list by choosing option 2.")
+    except IndexError:
+            print(f"\nThere are a total of {len(to_do_list)} tasks. Please choose a number under or equal to {len(to_do_list)}")     
+    except TaskComplete as e:
+        print(e.message)
+    finally:
+        print("Returning to menu...\n")
 
 #this function checks if the task is in the list and removes it if it is
 def remove_task(to_do_list, index):
@@ -107,6 +122,8 @@ def to_do_list_main_function():
             elif option == 5:
                 print("Leaving main menu\n")
                 break
+        except ValueError:
+            print("\nPlease follow the prompt carefully and try again with correct input type (text or number)")
         finally:
             print("Thanks for using the To Do List application! Go seize the day!")
 
