@@ -1,7 +1,8 @@
+# For more information on features and requirements for the To Do List application, please use the README file.
+
 complete_status = " - complete"
 incomplete_status= " - incomplete"
-to_do_list = []
-#task = 0   
+#to_do_list = [] 
 
 # defines custom exception for a task already in list
 class TaskInListError(Exception):
@@ -22,19 +23,21 @@ class InvalidEntry(Exception):
     def  __init__(self, message):
         self.message = message
         return None
-    
+
+# defines custom error for a list that is empty and the user wants to view it    
 class EmptyListError(Exception):
     def __init__(self, message):
         self.message = message
         return None
 
 
+# defines custom error for a task that's being marked complete more than once
 class TaskComplete(Exception):
     def __init__(self, message):
         self.message = message
         return None
-
-# this function is for adding a task to the to do list
+    
+# this function is for adding a task to the to do list and uses another function to check if the task was already added
 def add_task(to_do_list, task):
     try:
         check_task(task, to_do_list)
@@ -50,7 +53,7 @@ def add_task(to_do_list, task):
     finally:
         print("Returning to menu...\n")
 
-# this function displays the updated to do list
+# this function displays the updated to do list and gives error if empty
 def display_task(to_do_list, task, index):
     try:
         if to_do_list:
@@ -65,6 +68,8 @@ def display_task(to_do_list, task, index):
     finally:
         print("Returning to menu...\n")
 
+#checks if task is in list and marks it complete, gives error if marked complete more than once, 
+# gives error for wrong input type, and gives error if the task number is greater than the amount of tasks.
 def mark_task_complete(index, to_do_list):
     index -= 1 
     try:
@@ -83,18 +88,20 @@ def mark_task_complete(index, to_do_list):
     finally:
         print("Returning to menu...\n")
 
-#this function checks if the task is in the list and removes it if it is
+#this function checks if the task is in the list and gives an error if the task number is greater than amount of tasks
 def remove_task(to_do_list, index):
     index -= 1
-    if index <= len(to_do_list):
-        removed_task = to_do_list.pop(index)
-        print(f"{removed_task} has been removed from the To Do List.")
-    else:
-        print("That task was not in your To Do List.")
-    return to_do_list
-
+    try:
+        if index <= len(to_do_list):
+            removed_task = to_do_list.pop(index)
+            print(f"{removed_task} has been removed from the To Do List.")
+            return to_do_list
+    except IndexError:
+        print("\nLooks like we selected a number higher than the amount of tasks in the To Do List. Check the list by selecting option 2.")
+    finally:
+        print("Returning to menu...\n")
 def to_do_list_main_function():
-    #to_do_list = []
+    to_do_list = []
     task = 0
     index = 0
 
@@ -105,8 +112,8 @@ def to_do_list_main_function():
         print("3. Mark as complete")
         print("4. Delete a task")
         print("5. Quit")
-        option = int(input("Enter option number: "))
-        try: 
+        try:
+            option = int(input("Enter option number: "))
             option = int(option)
             if option == 1:
                 task = input("Enter the task: ")
