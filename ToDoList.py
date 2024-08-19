@@ -2,7 +2,6 @@
 
 complete_status = " - complete"
 incomplete_status= " - incomplete"
-#to_do_list = [] 
 
 # defines custom exception for a task already in list
 class TaskInListError(Exception):
