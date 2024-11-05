@@ -58,8 +58,8 @@ def remove_task(to_do_list, index):
             removed_task = to_do_list.pop(index)
             print(f"{removed_task} has been removed from the To Do List.")
             return to_do_list
-    except IndexError:
-        print("\nLooks like we selected a number higher than the amount of tasks in the To Do List. Check the list by selecting option 2.")
+    except Exception as e:
+        print(f"Error Message: {e}. Please try again")
     finally:
         print("Returning to menu...\n")
 def main_function():
